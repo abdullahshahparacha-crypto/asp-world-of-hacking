@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <title>ASP WORLD OF HACKING</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: #080808;
+      color: #f5f5f5;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      padding: 38px 26px;
+      text-align: center;
+      background: #111111;
+      border: 1px solid #303030;
+      border-radius: 18px;
+      box-shadow: 0 0 45px rgba(255, 255, 255, 0.04);
+    }
+
+    .welcome {
+      margin-bottom: 12px;
+      color: #c8a96b;
+      font-size: 16px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: clamp(25px, 6vw, 40px);
+      line-height: 1.2;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    .message {
+      margin-bottom: 20px;
+      color: #dddddd;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .notice-box {
+      margin-top: 20px;
+      padding: 10px 14px;
+      background: #181818;
+      border: 1px dashed #444444;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .notice-title {
+      font-size: 12px;
+      color: #c8a96b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .notice {
+      color: #a9a9a9;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      min-width: 125px;
+      padding: 12px 26px;
+      border: 1px solid #c8a96b;
+      border-radius: 8px;
+      background: #c8a96b;
+      color: #111111;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    button:hover {
+      background: #dfc18a;
+      transform: translateY(-2px);
+    }
+
+    button:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 4px;
+    }
+
+    .secondary {
+      background: transparent;
+      color: #f5f5f5;
+      border-color: #555555;
+    }
+
+    .secondary:hover {
+      background: #252525;
+    }
+
+    .timer {
+      margin-top: 22px;
+      color: #c8a96b;
+      font-size: 32px;
+      font-weight: bold;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 420px) {
+      .container {
+        padding: 28px 18px;
+      }
+      .buttons {
+        gap: 12px;
+      }
+      button {
+        min-width: 110px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <!-- First Interface -->
+    <section id="welcomeScreen">
+      <div class="welcome">WELCOME DEAR HACKER</div>
+
+      <h1>ASP WORLD OF HACKING</h1>
+
+      <p class="message">You must watch this link</p>
+
+      <div class="buttons">
+        <button type="button" onclick="startDemo()">YES</button>
+        <button type="button" class="secondary" onclick="startDemo()">NO</button>
+      </div>
+
+      <div class="notice-box">
+        <div class="notice-title">[ NOTICE ]</div>
+        <p class="notice">"This is a viral leak video, watch on your risk"</p>
+      </div>
+    </section>
+
+    <!-- Second Interface -->
+    <section id="resultScreen" class="hidden">
+      <h1>ASP WORLD OF HACKING</h1>
+
+      <p class="message">
+        This link is just for testing and fun. 
+        It does not remove or damage your data or damage any component of your device. 
+        It only plays a continuous audio tone for 60 seconds.
+      </p>
+
+      <p class="message">Wait for 60 seconds</p>
+
+      <div id="timer" class="timer" role="timer" aria-live="polite">
+        60 seconds
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let audioContext = null;
+    let oscillator = null;
+    let gainNode = null;
+    let compressor = null;
+    let countdownInterval = null;
+    let endTimeout = null;
+    let started = false;
+    let remainingTime = 60;
+
+    // Prevent accidental closure while test is running
+    window.addEventListener("beforeunload", (event) => {
+      if (started && remainingTime > 0) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    });
+
+    function startDemo() {
+      if (started) return;
+      started = true;
+
+      document.getElementById("welcomeScreen").classList.add("hidden");
+      document.getElementById("resultScreen").classList.remove("hidden");
+
+      remainingTime = 60;
+      const timerElement = document.getElementById("timer");
+      timerElement.textContent = remainingTime + " seconds";
+
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+        if (AudioContextClass) {
+          audioContext = new AudioContextClass();
+
+          // Advanced Audio Nodes to maximize output consistency and power
+          oscillator = audioContext.createOscillator();
+          gainNode = audioContext.createGain();
+          compressor = audioContext.createDynamicsCompressor();
+
+          // Compressor settings to keep volume tightly controlled and robust
+          compressor.threshold.setValueAtTime(-10, audioContext.currentTime);
+          compressor.knee.setValueAtTime(40, audioContext.currentTime);
+          compressor.ratio.setValueAtTime(12, audioContext.currentTime);
+          compressor.attack.setValueAtTime(0, audioContext.currentTime);
+          compressor.release.setValueAtTime(0.25, audioContext.currentTime);
+
+          oscillator.type = "sine";
+          oscillator.frequency.value = 880; // Standard clear beep frequency
+
+          // Maximum safe software gain amplification
+          gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+
+          // Connect routing: Oscillator -> Gain -> Compressor -> Destination
+          oscillator.connect(gainNode);
+          gainNode.connect(compressor);
+          compressor.connect(audioContext.destination);
+
+          oscillator.start();
+
+          if (audioContext.state === "suspended") {
+            audioContext.resume();
+          }
+        }
+      } catch (error) {
+        console.error("Audio initialization error:", error);
+      }
+
+      countdownInterval = setInterval(() => {
+        remainingTime--;
+
+        if (remainingTime > 0) {
+          timerElement.textContent = remainingTime + " seconds";
+        } else {
+          timerElement.textContent = "0 seconds";
+          stopDemo();
+        }
+      }, 1000);
+
+      endTimeout = setTimeout(() => {
+        stopDemo();
+      }, 60000);
+    }
+
+    function stopDemo() {
+      clearInterval(countdownInterval);
+      clearTimeout(endTimeout);
+
+      if (oscillator) {
+        try { oscillator.stop(); } catch (e) {}
+        try { oscillator.disconnect(); } catch (e) {}
+        oscillator = null;
+      }
+
+      if (gainNode) {
+        try { gainNode.disconnect(); } catch (e) {}
+        gainNode = null;
+      }
+
+      if (compressor) {
+        try { compressor.disconnect(); } catch (e) {}
+        compressor = null;
+      }
+
+      if (audioContext && audioContext.state !== "closed") {
+        audioContext.close().catch(() => {});
+      }
+
+      audioContext = null;
+      started = false;
+    }
+  </script>
+</body>
+</html>
